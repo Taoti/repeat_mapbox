@@ -1,0 +1,10 @@
+mapbox:
+  css:
+    component:
+      'https://api.tiles.mapbox.com/mapbox-gl-js/v1.5.0/mapbox-gl.css': { type: external }
+  js:
+    'https://api.tiles.mapbox.com/mapbox-gl-js/v1.5.0/mapbox-gl.js': { type: external }
+    js/mapbox.js: { minified: false }
+  dependencies:
+    - core/drupal
+    - core/jquery

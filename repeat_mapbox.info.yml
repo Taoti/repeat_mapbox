@@ -1,0 +1,9 @@
+name: REPEAT Mapbox
+type: module
+description: Provides various mapping functionality for projects using Mapbox
+package: Custom
+core: 8.x
+core_version_requirement: ^8 || ^9
+dependencies:
+  - drupal:token
+  - drupal:node
