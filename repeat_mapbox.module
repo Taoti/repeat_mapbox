@@ -8,7 +8,9 @@
 declare(strict_types = 1);
 
 use Drupal\Component\Utility\Crypt;
+use Drupal\Component\Utility\Html;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Link;
 use Drupal\search_api\Query\QueryInterface;
 use Drupal\views\ViewExecutable;
 use Drupal\views\Views;
@@ -125,7 +127,26 @@ function repeat_mapbox_preprocess_paragraph(array &$vars): void {
   /** @var \Drupal\paragraphs\Entity\Paragraph $paragraph */
   $paragraph = $vars['paragraph'];
   if ($paragraph->getType() === 'mapbox_map') {
-    $vars['#attached']['library'][] = 'repeat_mapbox_mapping/mapbox';
+    $config = Drupal::config('repeat_mapbox.settings');
+    if ($token = $config->get('token')) {
+      $vars['#attached']['drupalSettings']['repeat_mapbox']['token'] = $token;
+      $vars['#attached']['drupalSettings']['repeat_mapbox']['url'] = $config->get('url');
+      $vars['#attached']['library'][] = 'repeat_mapbox/mapbox';
+      $vars['content']['map'] = [
+        '#type' => 'container',
+        '#attributes' => [
+          'id' => Html::getId('map'),
+          'class' => ['mapbox_map'],
+        ],
+      ];
+    }
+    else {
+      Drupal::logger('Mapbox')->error('Mapbox access token not set.', [
+        'link' => Link::createFromRoute('Configure Mapbox', 'repeat_mapbox.mapbox_settings')
+          ->toString(TRUE)
+          ->getGeneratedLink(),
+      ]);
+    }
   }
 }
 

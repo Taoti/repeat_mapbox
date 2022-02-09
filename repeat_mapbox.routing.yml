@@ -1,0 +1,7 @@
+repeat_mapbox.mapbox_settings:
+  path: '/admin/config/services/mapbox'
+  defaults:
+    _title: 'MapBox'
+    _form: 'Drupal\repeat_mapbox\Form\MapboxSettingsForm'
+  requirements:
+    _permission: 'administer site configuration'

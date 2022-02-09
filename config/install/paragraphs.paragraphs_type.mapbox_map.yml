@@ -1,0 +1,9 @@
+langcode: en
+status: true
+dependencies: {  }
+id: mapbox_map
+label: 'Mapbox Map'
+icon_uuid: null
+icon_default: null
+description: 'Use this paragraph to place a mapbox map'
+behavior_plugins: {  }

@@ -1,0 +1,5 @@
+repeat_mapbox.mapbox_settings:
+  title: MapBox
+  parent: system.admin_config_services
+  route_name: repeat_mapbox.mapbox_settings
+  weight: 10

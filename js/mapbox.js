@@ -5,10 +5,10 @@
         Drupal.repeat_map = {};
       }
       if ($('#map', context).length && Drupal.repeat_map.map === undefined) {
-        mapboxgl.accessToken = ''; // enter token
+        mapboxgl.accessToken = settings.repeat_mapbox.token
         Drupal.repeat_map.map = new mapboxgl.Map({
           container: 'map',
-          style: 'mapbox://styles/', // enter mapbox url
+          style: settings.repeat_mapbox.url,
           center: [-99.999, 55.555],
           scrollZoom: false,
           zoom: 5
