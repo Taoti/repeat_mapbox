@@ -1,5 +1,5 @@
 (function ($, Drupal) {
-  Drupal.behaviors.LotusBehavior = {
+  Drupal.behaviors.repeat_mapbox = {
     attach: function (context, settings) {
       if (Drupal.repeat_map === undefined) {
         Drupal.repeat_map = {};

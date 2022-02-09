@@ -5,16 +5,18 @@
  * Provides map related functionality.
  */
 
-use Drupal\search_api\Query\QueryInterface;
+declare(strict_types = 1);
+
 use Drupal\Component\Utility\Crypt;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\search_api\Query\QueryInterface;
 use Drupal\views\ViewExecutable;
 use Drupal\views\Views;
 
 /**
  * Implements hook_ENTITY_TYPE_presave().
  */
-function repeat_mapbox_mapping_node_presave(EntityInterface $entity) {
+function repeat_mapbox_mapping_node_presave(EntityInterface $entity): void {
   /** @var \Drupal\node\Entity\Node $entity */
   if ($entity->getType() !== 'project') {
     return;
@@ -53,10 +55,10 @@ function repeat_mapbox_mapping_node_presave(EntityInterface $entity) {
 /**
  * Returns data on US states.
  *
- * @return array
+ * @return mixed[]
  *   Array of data on US States.
  */
-function state_lat_long() {
+function state_lat_long(): array {
   return [
     'Alabama' => ['code' => 'AL', 'lat' => 32.7794, 'long' => -86.8287],
     'Alaska' => ['code' => 'AK', 'lat' => 64.0685, 'long' => -152.2782],
@@ -119,10 +121,10 @@ function state_lat_long() {
 /**
  * Implements hook_preprocess_HOOK().
  */
-function repeat_mapbox_mapping_preprocess_paragraph(array &$vars) {
+function repeat_mapbox_preprocess_paragraph(array &$vars): void {
   /** @var \Drupal\paragraphs\Entity\Paragraph $paragraph */
   $paragraph = $vars['paragraph'];
-  if ($paragraph->getType() === 'map') {
+  if ($paragraph->getType() === 'mapbox_map') {
     $vars['#attached']['library'][] = 'repeat_mapbox_mapping/mapbox';
   }
 }
@@ -130,7 +132,7 @@ function repeat_mapbox_mapping_preprocess_paragraph(array &$vars) {
 /**
  * Implements hook_preprocess_views_view().
  */
-function repeat_mapbox_mapping_preprocess_views_view(&$vars) {
+function repeat_mapbox_preprocess_views_view(array &$vars): void {
   /** @var \Drupal\views\ViewExecutable $view */
   $view = $vars['view'];
   if ($view->id() === 'facetted_projects_view') {
@@ -146,7 +148,7 @@ function repeat_mapbox_mapping_preprocess_views_view(&$vars) {
  * @return string
  *   JSON array for settings.
  */
-function _repeat_mapbox_mapping_get_geojson(ViewExecutable $view) {
+function _repeat_mapbox_mapping_get_geojson(ViewExecutable $view): string {
   $json_view = Views::getView('geojson_export');
   $json_view->setDisplay('geojson_export_1');
 
@@ -164,7 +166,7 @@ function _repeat_mapbox_mapping_get_geojson(ViewExecutable $view) {
 /**
  * Implements hook_geo_json_view().
  */
-function repeat_mapbox_mapping_geojson_view_alter(array &$features, ViewExecutable $view) {
+function repeat_mapbox_geojson_view_alter(array &$features, ViewExecutable $view): void {
   $new = [
     'type' => 'FeatureCollection',
     'features' => [],
@@ -191,7 +193,7 @@ function repeat_mapbox_mapping_geojson_view_alter(array &$features, ViewExecutab
 /**
  * Implements hook_search_api_query_alter().
  */
-function repeat_mapbox_mapping_search_api_query_alter(QueryInterface &$query) {
+function repeat_mapbox_search_api_query_alter(QueryInterface &$query): void {
   $facet_manager = \Drupal::service('facets.manager');
   $search_id = $query->getSearchId();
 
