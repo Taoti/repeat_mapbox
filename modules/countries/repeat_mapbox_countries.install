@@ -1499,3 +1499,16 @@ function repeat_mapbox_countries_install(): void {
   }
 
 }
+
+/**
+ * Delete country vocabulary terms.
+ */
+function repeat_mapbox_countries_uninstall(): void {
+  /** @var \Drupal\Core\Entity\EntityTypeManagerInterface $storage */
+  $storage = Drupal::service('entity_type.manager');
+  $storage = $storage->getStorage('taxonomy_term');
+  $terms = $storage->loadMultiple($storage->getQuery()
+    ->condition('vid', 'mapbox_country')
+    ->execute());
+  $storage->delete($terms);
+}
