@@ -29,7 +29,7 @@ class MapboxSettingsForm extends ConfigFormBase {
       '#title' => $this->t('Mapbox Access Token'),
       '#default_value' => $config->get('token'),
       '#required' => TRUE,
-      '#description' => $this->t('Get a token from your <a href="https://account.mapbox.com/access-tokens/">Mapbox account</a>.')
+      '#description' => $this->t('Get a token from your <a href="https://account.mapbox.com/access-tokens/">Mapbox account</a>.'),
     ];
     $form['url'] = [
       '#type' => 'textfield',

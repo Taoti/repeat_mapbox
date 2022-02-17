@@ -1,0 +1,12 @@
+name: REPEAT Mapbox Countries
+type: module
+description: Provides mapping functionality for countries.
+package: Custom
+core_version_requirement: ^9
+dependencies:
+  - drupal:node
+  - drupal:taxonomy
+  - drupal:token
+  - drupal:views
+  - geofield
+  - repeat_mapbox

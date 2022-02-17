@@ -1,0 +1,21 @@
+uuid: fb7138da-9132-4842-b20f-e1734a4adb9d
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.taxonomy_term.field_marker_position
+    - taxonomy.vocabulary.mapbox_country
+  module:
+    - geofield
+id: taxonomy_term.mapbox_country.field_marker_position
+field_name: field_marker_position
+entity_type: taxonomy_term
+bundle: mapbox_country
+label: 'Marker Position'
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: geofield

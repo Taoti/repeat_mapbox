@@ -1,0 +1,19 @@
+uuid: 0374e773-c71a-4f12-b0a1-e3c080e50f4e
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.taxonomy_term.field_mapbox_country_id
+    - taxonomy.vocabulary.mapbox_country
+id: taxonomy_term.mapbox_country.field_mapbox_country_id
+field_name: field_mapbox_country_id
+entity_type: taxonomy_term
+bundle: mapbox_country
+label: 'Mapbox Country ID'
+description: 'Country ID used by Mapbox boundaries API'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

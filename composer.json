@@ -6,7 +6,8 @@
     "drupal/entity_reference_revisions": "~1.3"
   },
   "suggest": {
-    "drupal/views_geojson": "Recommended for an improved user experience when using the Paragraphs library module"
+    "drupal/views_geojson": "Used for some views/options",
+    "drupal/geofield": "Used to store location data"
   },
   "require-dev": {
     "drupal/search_api": "~1.0",

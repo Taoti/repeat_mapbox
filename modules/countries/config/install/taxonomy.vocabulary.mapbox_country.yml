@@ -1,0 +1,8 @@
+uuid: a407a5b8-821b-4e23-9262-b7f229e3b69f
+langcode: en
+status: true
+dependencies: {  }
+name: 'Mapbox Country'
+vid: mapbox_country
+description: 'Used by the mapbox module to provide country information'
+weight: 0
