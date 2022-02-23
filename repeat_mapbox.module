@@ -9,116 +9,10 @@ declare(strict_types = 1);
 
 use Drupal\Component\Utility\Crypt;
 use Drupal\Component\Utility\Html;
-use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Link;
 use Drupal\search_api\Query\QueryInterface;
 use Drupal\views\ViewExecutable;
 use Drupal\views\Views;
-
-/**
- * Implements hook_ENTITY_TYPE_presave().
- */
-function repeat_mapbox_mapping_node_presave(EntityInterface $entity): void {
-  /** @var \Drupal\node\Entity\Node $entity */
-  if ($entity->getType() !== 'project') {
-    return;
-  }
-  if ($entity->get('field_geography')->isEmpty()) {
-    return;
-  }
-  if ($terms = $entity->get('field_geography')->referencedEntities()) {
-    $states_data = state_lat_long();
-    $map = [];
-    foreach ($terms as $term) {
-      $state = $term->get('name')->value;
-      if (!empty($states_data[$state])) {
-        $data = $states_data[$state];
-
-        $lat = $data['lat'] + (rand(-600, 600) * 0.001);
-        $lon = $data['long'] + (rand(-1000, 1000) * 0.001);
-
-        $map[] = [
-          'value' => "POINT ({$lon} {$lat})",
-          'geo_type' => 'Point',
-          'lon' => $lon,
-          'lat' => $lat,
-          'left' => $lon,
-          'top' => $lat,
-          'right' => $lon,
-          'bottom' => $lat,
-          'latlon' => "{$lat},{$lon}",
-        ];
-      }
-    }
-    $entity->get('field_map_location')->setValue($map);
-  }
-}
-
-/**
- * Returns data on US states.
- *
- * @return mixed[]
- *   Array of data on US States.
- */
-function state_lat_long(): array {
-  return [
-    'Alabama' => ['code' => 'AL', 'lat' => 32.7794, 'long' => -86.8287],
-    'Alaska' => ['code' => 'AK', 'lat' => 64.0685, 'long' => -152.2782],
-    'Arizona' => ['code' => 'AZ', 'lat' => 34.2744, 'long' => -111.6602],
-    'Arkansas' => ['code' => 'AR', 'lat' => 34.8938, 'long' => -92.4426],
-    'California' => ['code' => 'CA', 'lat' => 37.1841, 'long' => -119.4696],
-    'Colorado' => ['code' => 'CO', 'lat' => 38.9972, 'long' => -105.5478],
-    'Connecticut' => ['code' => 'CT', 'lat' => 41.6219, 'long' => -72.7273],
-    'Delaware' => ['code' => 'DE', 'lat' => 38.9972, 'long' => -75.5050],
-    'District Of Columbia' => [
-      'code' => 'DC',
-      'lat' => 38.9101,
-      'long' => -77.0147,
-    ],
-    'Florida' => ['code' => 'FL', 'lat' => 28.6305, 'long' => -82.4497],
-    'Georgia' => ['code' => 'GA', 'lat' => 32.6415, 'long' => -83.4426],
-    'Hawaii' => ['code' => 'HI', 'lat' => 20.2927, 'long' => -156.3737],
-    'Idaho' => ['code' => 'ID', 'lat' => 44.3509, 'long' => -114.6130],
-    'Illinois' => ['code' => 'IL', 'lat' => 40.0417, 'long' => -89.1965],
-    'Indiana' => ['code' => 'IN', 'lat' => 39.8942, 'long' => -86.2816],
-    'Iowa' => ['code' => 'IA', 'lat' => 42.0751, 'long' => -93.4960],
-    'Kansas' => ['code' => 'KS', 'lat' => 38.4937, 'long' => -98.3804],
-    'Kentucky' => ['code' => 'KY', 'lat' => 37.5347, 'long' => -85.3021],
-    'Louisiana' => ['code' => 'LA', 'lat' => 31.0689, 'long' => -91.9968],
-    'Maine' => ['code' => 'ME', 'lat' => 45.3695, 'long' => -69.2428],
-    'Maryland' => ['code' => 'MD', 'lat' => 39.0550, 'long' => -76.7909],
-    'Massachusetts' => ['code' => 'MA', 'lat' => 42.2596, 'long' => -71.8083],
-    'Michigan' => ['code' => 'MI', 'lat' => 44.3467, 'long' => -85.4102],
-    'Minnesota' => ['code' => 'MN', 'lat' => 46.2807, 'long' => -94.3053],
-    'Mississippi' => ['code' => 'MS', 'lat' => 32.7364, 'long' => -89.6678],
-    'Missouri' => ['code' => 'MO', 'lat' => 38.3566, 'long' => -92.4580],
-    'Montana' => ['code' => 'MT', 'lat' => 47.0527, 'long' => -109.6333],
-    'Nebraska' => ['code' => 'NE', 'lat' => 41.5378, 'long' => -99.7951],
-    'Nevada' => ['code' => 'NV', 'lat' => 39.3289, 'long' => -99.7951],
-    'New Hampshire' => ['code' => 'NH', 'lat' => 43.6805, 'long' => -71.5811],
-    'New Jersey' => ['code' => 'NJ', 'lat' => 40.1907, 'long' => -74.6728],
-    'New Mexico' => ['code' => 'NM', 'lat' => 34.4071, 'long' => -106.1126],
-    'New York' => ['code' => 'NY', 'lat' => 43.9538, 'long' => -75.5268],
-    'North Carolina' => ['code' => 'NC', 'lat' => 35.5557, 'long' => -79.3877],
-    'North Dakota' => ['code' => 'ND', 'lat' => 47.4501, 'long' => -100.4659],
-    'Ohio' => ['code' => 'OH', 'lat' => 40.2862, 'long' => -82.7937],
-    'Oklahoma' => ['code' => 'OK', 'lat' => 35.5889, 'long' => -97.4943],
-    'Oregon' => ['code' => 'OR', 'lat' => 43.9336, 'long' => -102.5583],
-    'Pennsylvania' => ['code' => 'PA', 'lat' => 40.8781, 'long' => -77.7996],
-    'Rhode Island' => ['code' => 'RI', 'lat' => 41.6762, 'long' => -71.5562],
-    'South Carolina' => ['code' => 'SC', 'lat' => 33.9169, 'long' => -80.8964],
-    'South Dakota' => ['code' => 'SD', 'lat' => 44.4443, 'long' => -100.2263],
-    'Tennessee' => ['code' => 'TN', 'lat' => 35.8580, 'long' => -86.3505],
-    'Texas' => ['code' => 'TX', 'lat' => 31.4757, 'long' => -99.3312],
-    'Utah' => ['code' => 'UT', 'lat' => 39.3055, 'long' => -111.6703],
-    'Vermont' => ['code' => 'VT', 'lat' => 44.0687, 'long' => -72.6658],
-    'Virginia' => ['code' => 'VA', 'lat' => 37.5215, 'long' => -78.8537],
-    'Washington' => ['code' => 'WA', 'lat' => 47.3826, 'long' => -120.4472],
-    'West Virginia' => ['code' => 'WV', 'lat' => 38.6409, 'long' => -80.6227],
-    'Wisconsin' => ['code' => 'WI', 'lat' => 44.6243, 'long' => -89.9941],
-    'Wyoming' => ['code' => 'WY', 'lat' => 42.9957, 'long' => -107.5512],
-  ];
-}
 
 /**
  * Implements hook_preprocess_HOOK().
@@ -127,16 +21,15 @@ function repeat_mapbox_preprocess_paragraph(array &$vars): void {
   /** @var \Drupal\paragraphs\Entity\Paragraph $paragraph */
   $paragraph = $vars['paragraph'];
   if ($paragraph->getType() === 'mapbox_map') {
-    $config = Drupal::config('repeat_mapbox.settings');
-    if ($token = $config->get('token')) {
-      $vars['#attached']['drupalSettings']['repeat_mapbox']['token'] = $token;
-      $vars['#attached']['drupalSettings']['repeat_mapbox']['url'] = $config->get('url');
+    $config = Drupal::config('repeat_mapbox.settings')->get();
+    if (isset($config['token'])) {
+      $vars['#attached']['drupalSettings']['repeatMapbox']['settings'] = $config;
       $vars['#attached']['library'][] = 'repeat_mapbox/mapbox';
       $vars['content']['map'] = [
         '#type' => 'container',
         '#attributes' => [
           'id' => Html::getId('map'),
-          'class' => ['mapbox_map'],
+          'class' => ['mapbox_map', 'repeat_mapbox'],
         ],
       ];
     }
@@ -146,6 +39,9 @@ function repeat_mapbox_preprocess_paragraph(array &$vars): void {
           ->toString(TRUE)
           ->getGeneratedLink(),
       ]);
+      $vars['content'] = [
+        '#markup' => t('Map unavailable'),
+      ];
     }
   }
 }
