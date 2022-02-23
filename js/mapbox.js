@@ -1,24 +1,47 @@
-(function ($, Drupal) {
+(function ($, Drupal, mapboxgl) {
+  class RepeatMap {
+    constructor(element) {
+      this.element = element;
+      this.controls = {};
+      let $element = $(element);
+      const settings = drupalSettings.repeatMapbox.settings;
+      let options = $.extend({}, {
+          container: element,
+          style: settings.url,
+          center: [21, 10],
+          scrollZoom: false,
+          zoom: 2
+        },
+        $element.data());
+      mapboxgl.accessToken = settings.token;
+      this.mapbox = new mapboxgl.Map(options);
+      this.mapbox.on('load', $.proxy(this.load, this));
+    }
+
+    load() {
+      const map = this;
+      $.each(repeatMap.load, function(id, fn){
+        fn(map);
+      });
+    }
+  }
+  window.repeatMap = {
+    instances: [],
+    load: {
+      addNavigation: function(map) {
+        map.controls.nav = new mapboxgl.NavigationControl();
+        map.mapbox.addControl(map.controls.nav, 'top-right');
+      }
+    },
+
+  }
   Drupal.behaviors.repeat_mapbox = {
     attach: function (context, settings) {
-      if (Drupal.repeat_map === undefined) {
-        Drupal.repeat_map = {};
-      }
-      if ($('#map', context).length && Drupal.repeat_map.map === undefined) {
-        mapboxgl.accessToken = settings.repeat_mapbox.token
-        Drupal.repeat_map.map = new mapboxgl.Map({
-          container: 'map',
-          style: settings.repeat_mapbox.url,
-          center: [-99.999, 55.555],
-          scrollZoom: false,
-          zoom: 5
-        });
+      $('.repeat_mapbox').once().each(function() {
+        repeatMap.instances.push(new RepeatMap(this));
+      });
 
-        var nav = new mapboxgl.NavigationControl();
-        Drupal.repeat_map.map.addControl(nav, 'top-left');
-        Drupal.repeat_map.hash = '';
-      }
-      if (settings.repeat_mapbox.geojson && Drupal.repeat_map.map) {
+      if (settings.repeat_mapbox && settings.repeat_mapbox.geojson && Drupal.repeat_map.map) {
         if (Drupal.repeat_map.hash !== settings.repeat_mapbox.hash) {
           if (Drupal.repeat_map.markers !== undefined) {
             for (var i = Drupal.repeat_map.markers.length - 1; i >= 0; i--) {
@@ -47,4 +70,4 @@
       }
     }
   };
-})(jQuery, Drupal);
+})(jQuery, Drupal, mapboxgl);
