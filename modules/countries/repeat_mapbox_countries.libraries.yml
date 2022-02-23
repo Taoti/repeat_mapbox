@@ -1,0 +1,5 @@
+countries_hover:
+  js:
+    js/countries.js: {}
+  dependencies:
+    - repeat_mapbox/mapbox
