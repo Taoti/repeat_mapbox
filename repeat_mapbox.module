@@ -7,10 +7,8 @@
 
 declare(strict_types = 1);
 
-use Drupal\Component\Utility\Crypt;
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Link;
-use Drupal\search_api\Query\QueryInterface;
 use Drupal\views\ViewExecutable;
 use Drupal\views\Views;
 
@@ -34,7 +32,7 @@ function repeat_mapbox_preprocess_paragraph(array &$vars): void {
       ];
     }
     else {
-      Drupal::logger('Mapbox')->error('Mapbox access token not set.', [
+      Drupal::logger('Repeat Mapbox')->error('Mapbox access token not set.', [
         'link' => Link::createFromRoute('Configure Mapbox', 'repeat_mapbox.mapbox_settings')
           ->toString(TRUE)
           ->getGeneratedLink(),
@@ -47,34 +45,38 @@ function repeat_mapbox_preprocess_paragraph(array &$vars): void {
 }
 
 /**
- * Implements hook_preprocess_views_view().
- */
-function repeat_mapbox_preprocess_views_view(array &$vars): void {
-  /** @var \Drupal\views\ViewExecutable $view */
-  $view = $vars['view'];
-  if ($view->id() === 'facetted_projects_view') {
-    $geo_json = _repeat_mapbox_mapping_get_geojson($view);
-    $vars['#attached']['drupalSettings']['ftm_mapbox']['geojson'] = json_decode($geo_json, TRUE);
-    $vars['#attached']['drupalSettings']['ftm_mapbox']['hash'] = Crypt::hashBase64($geo_json);
-  }
-}
-
-/**
- * Get GEO JSON mapping points.
+ * Get data from a view for use in the map.
+ *
+ * Usually used to attach data as a json array with decode_json() to
+ * drupalSettings in a paragraph or views preprocess.
+ *
+ * @param \Drupal\views\ViewExecutable|null $parent_view
+ *   View to get arguments from.
+ * @param string $json_view
+ *   The view name to load.
+ * @param string $display
+ *   The view display to load - should be a GEOJson or REST Export.
  *
  * @return string
- *   JSON array for settings.
+ *   Rendered view.
  */
-function _repeat_mapbox_mapping_get_geojson(ViewExecutable $view): string {
-  $json_view = Views::getView('geojson_export');
-  $json_view->setDisplay('geojson_export_1');
-
-  $args = $view->args;
-  $exposed_input = $view->getExposedInput();
-  if (!empty($exposed_input['search_api_fulltext'])) {
-    $args['search_api_fulltext'] = $exposed_input['search_api_fulltext'];
+function _repeat_mapbox_get_rendered_view(?ViewExecutable $parent_view = NULL, string $json_view, string $display): string {
+  $json_view = Views::getView($json_view);
+  if (empty($json_view->storage->get('display')[$display])) {
+    Drupal::logger('Repeat Mapbox')->error('Invalid display passed to _repeat_mapbox_get_rendered_view().');
+    return '[]';
   }
-  $json_view->setArguments($args);
+  $json_view->setDisplay($display);
+
+  if ($parent_view) {
+    $args = $parent_view->args;
+    $exposed_input = $parent_view->getExposedInput();
+    if (!empty($exposed_input['search_api_fulltext'])) {
+      $args['search_api_fulltext'] = $exposed_input['search_api_fulltext'];
+    }
+    $json_view->setArguments($args);
+    $json_view->setExposedInput($exposed_input);
+  }
 
   $rendered_view = $json_view->render();
   return $rendered_view['#markup']->__toString();
@@ -82,6 +84,9 @@ function _repeat_mapbox_mapping_get_geojson(ViewExecutable $view): string {
 
 /**
  * Implements hook_geo_json_view().
+ *
+ * Mapbox doesn't handle multipoint geometries in geojson so split them out to
+ * single Point geometries with the same data.
  */
 function repeat_mapbox_geojson_view_alter(array &$features, ViewExecutable $view): void {
   $new = [
@@ -105,19 +110,4 @@ function repeat_mapbox_geojson_view_alter(array &$features, ViewExecutable $view
     }
   }
   $features = $new;
-}
-
-/**
- * Implements hook_search_api_query_alter().
- */
-function repeat_mapbox_search_api_query_alter(QueryInterface &$query): void {
-  $facet_manager = \Drupal::service('facets.manager');
-  $search_id = $query->getSearchId();
-
-  // If map view, then alter the query to include the facets from the list view.
-  $id = 'views_geojson_export:geojson_export__geojson_export_1';
-  if (strpos($search_id, $id) === 0) {
-    $search_id = 'search_api:views_block__facetted_projects_view__block_1';
-    $facet_manager->alterQuery($query, $search_id);
-  }
 }
