@@ -14,8 +14,12 @@
         },
         $element.data());
       mapboxgl.accessToken = settings.token;
+      const map = this;
       this.mapbox = new mapboxgl.Map(options);
       this.mapbox.on('load', $.proxy(this.load, this));
+      this.mapbox.on('idle',function(){
+        map.mapbox.resize()
+      });
     }
 
     load() {
