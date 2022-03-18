@@ -28,6 +28,7 @@ function repeat_mapbox_preprocess_paragraph(array &$vars): void {
         '#attributes' => [
           'id' => Html::getId('map'),
           'class' => ['mapbox_map', 'repeat_mapbox'],
+          'data-mapbox-id' => $paragraph->id(),
         ],
       ];
     }
