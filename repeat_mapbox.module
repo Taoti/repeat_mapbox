@@ -61,7 +61,7 @@ function repeat_mapbox_preprocess_paragraph(array &$vars): void {
  * @return string
  *   Rendered view.
  */
-function _repeat_mapbox_get_rendered_view(?ViewExecutable $parent_view = NULL, string $json_view, string $display): string {
+function _repeat_mapbox_get_rendered_view(ViewExecutable $parent_view = NULL, string $json_view, string $display): string {
   $json_view = Views::getView($json_view);
   if (empty($json_view->storage->get('display')[$display])) {
     Drupal::logger('Repeat Mapbox')->error('Invalid display passed to _repeat_mapbox_get_rendered_view().');
