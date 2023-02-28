@@ -1,0 +1,36 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.mapbox_map.field_repeat_mapbox_base_url
+    - field.field.paragraph.mapbox_map.field_repeat_mapbox_data_view
+    - field.field.paragraph.mapbox_map.field_repeat_mapbox_list_view
+    - paragraphs.paragraphs_type.mapbox_map
+  module:
+    - viewsreference
+id: paragraph.mapbox_map.default
+targetEntityType: paragraph
+bundle: mapbox_map
+mode: default
+content:
+  field_repeat_mapbox_list_view:
+    type: viewsreference_formatter
+    label: hidden
+    settings:
+      plugin_types:
+        block: block
+        default: 0
+        page: 0
+        attachment: 0
+        embed: 0
+        feed: 0
+        geojson_export: 0
+        entity_browser: 0
+        data_export: 0
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden:
+  field_repeat_mapbox_base_url: true
+  field_repeat_mapbox_data_view: true
+  search_api_excerpt: true

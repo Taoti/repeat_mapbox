@@ -1,0 +1,18 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_repeat_mapbox_base_url
+    - paragraphs.paragraphs_type.mapbox_map
+id: paragraph.mapbox_map.field_repeat_mapbox_base_url
+field_name: field_repeat_mapbox_base_url
+entity_type: paragraph
+bundle: mapbox_map
+label: 'Mapbox base map URL'
+description: 'A Mapbox map url ex: <em>mapbox://styles/mapbox/streets-v11</em>. If no value is set, will use site value set in <a target="_blank" href="/admin/config/services/mapbox">Mapbox Configuration</a>.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

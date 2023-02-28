@@ -15,6 +15,7 @@
         $element.data());
       mapboxgl.accessToken = settings.token;
       const map = this;
+      this.id = $element.data('mapbox-id');
       this.mapbox = new mapboxgl.Map(options);
       this.mapbox.on('load', $.proxy(this.load, this));
       this.mapbox.on('idle',function(){
@@ -32,9 +33,13 @@
 
     update() {
       const map = this;
-      $.each(repeatMap.update, function(id, fn){
-        fn(map);
-      });
+      const data = drupalSettings.repeatMapbox[this.id];
+      if (data.update) {
+        $.each(repeatMap.update, function (id, fn) {
+          fn(map, data);
+        });
+        data.update = false;
+      }
     }
   }
   window.repeatMap = {
@@ -53,11 +58,11 @@
       $('.repeat_mapbox').once().each(function() {
         repeatMap.instances.push(new RepeatMap(this));
       });
-      if (settings.repeat_mapbox && settings.repeat_mapbox.update) {
+      if (settings.repeatMapbox && settings.repeatMapbox.update) {
         $.each(repeatMap.instances, function(n, map){
           map.update();
         });
-        settings.repeat_mapbox.update = false;
+        settings.repeatMapbox.update = false;
       }
     }
   };

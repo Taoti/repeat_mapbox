@@ -24,6 +24,7 @@ function repeat_mapbox_preprocess_paragraph(array &$vars): void {
       $vars['#attached']['drupalSettings']['repeatMapbox']['settings'] = $config;
       $vars['#attached']['library'][] = 'repeat_mapbox/mapbox';
       $vars['content']['map'] = [
+        '#weight' => -100,
         '#type' => 'container',
         '#attributes' => [
           'id' => Html::getId('map'),
@@ -31,6 +32,15 @@ function repeat_mapbox_preprocess_paragraph(array &$vars): void {
           'data-mapbox-id' => $paragraph->id(),
         ],
       ];
+       if (!$paragraph->get('field_repeat_mapbox_base_url')->isEmpty()) {
+        $vars['content']['map']['#attributes']['data-style'] = $paragraph->get('field_repeat_mapbox_base_url')->value;
+      }
+      if (!$paragraph->get('field_repeat_mapbox_data_view')->isEmpty()) {
+        /** @var ViewExecutable $list_view */
+        $list_view = $vars["content"]["field_repeat_mapbox_list_view"][0]["contents"]["#view"];
+        $list_view->build_info['mapbox'] = $paragraph->get('field_repeat_mapbox_data_view')->first()->getValue();
+        $list_view->build_info['mapbox']['map_id'] = $paragraph->id();
+      }
     }
     else {
       Drupal::logger('Repeat Mapbox')->error('Mapbox access token not set.', [
@@ -38,8 +48,9 @@ function repeat_mapbox_preprocess_paragraph(array &$vars): void {
           ->toString(TRUE)
           ->getGeneratedLink(),
       ]);
-      $vars['content'] = [
+      $vars['content']['map'] = [
         '#markup' => t('Map unavailable'),
+        '#weight' => -100,
       ];
     }
   }
@@ -90,6 +101,13 @@ function _repeat_mapbox_get_rendered_view(string $json_view, string $display, ?V
  * single Point geometries with the same data.
  */
 function repeat_mapbox_geojson_view_alter(array &$features, ViewExecutable $view): void {
+  // Only update geojson views that are tagged as mapbox views.
+  $view_entity = \Drupal\views\Entity\View::load($view->id());
+  $tags = \Drupal\Component\Utility\Tags::explode($view_entity->get('tag'));
+  if (!in_array('mapbox', $tags)) {
+    return;
+  }
+
   $new = [
     'type' => 'FeatureCollection',
     'features' => [],
@@ -111,4 +129,28 @@ function repeat_mapbox_geojson_view_alter(array &$features, ViewExecutable $view
     }
   }
   $features = $new;
+}
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function repeat_mapbox_preprocess_views_view(array &$variables): void {
+  /** @var \Drupal\views\ViewExecutable $view */
+  $view = $variables['view'];
+  if (!empty($view->build_info['mapbox'])) {
+    $data = $view->build_info['mapbox'];
+  }
+  else {
+    $request = Drupal::request();
+    if ($request->query->has('mapbox')) {
+      $data = $request->query->get('mapbox');
+    }
+    else {
+      return;
+    }
+  }
+  $variables['#attached']['drupalSettings']['repeatMapbox'][$data['map_id']]['items'] = json_decode(_repeat_mapbox_get_rendered_view($data['target_id'], $data['display_id'], $view), TRUE);
+  $variables['#attached']['drupalSettings']['repeatMapbox'][$data['map_id']]['update'] = TRUE;
+  $variables['#attached']['drupalSettings']['repeatMapbox']['update'] = TRUE;
+  $variables['#attached']['drupalSettings']['views']['ajaxViews']["views_dom_id:{$view->dom_id}"]['mapbox'] = $data;
 }

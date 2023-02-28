@@ -1,0 +1,36 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_repeat_mapbox_list_view
+    - paragraphs.paragraphs_type.mapbox_map
+    - views.view.archive
+  module:
+    - viewsreference
+id: paragraph.mapbox_map.field_repeat_mapbox_list_view
+field_name: field_repeat_mapbox_list_view
+entity_type: paragraph
+bundle: mapbox_map
+label: 'Map List View'
+description: 'A listing view to pair with the map'
+required: true
+translatable: false
+default_value:
+  -
+    options:
+      title: 0
+      argument: ''
+    display_id: default
+    argument: null
+    title: 0
+    data: null
+    target_uuid: f9aa2878-39b7-4b51-aed1-0c044f8dd0fc
+default_value_callback: ''
+settings:
+  handler: 'default:view'
+  handler_settings:
+    target_bundles: null
+    auto_create: 0
+  plugin_types:
+    block: block
+field_type: viewsreference

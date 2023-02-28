@@ -1,0 +1,26 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_repeat_mapbox_data_view
+    - paragraphs.paragraphs_type.mapbox_map
+  module:
+    - viewsreference
+id: paragraph.mapbox_map.field_repeat_mapbox_data_view
+field_name: field_repeat_mapbox_data_view
+entity_type: paragraph
+bundle: mapbox_map
+label: 'Map Data View'
+description: 'Select the Views GeoJSON export to use as the data source for the map.'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:view'
+  handler_settings:
+    target_bundles: null
+    auto_create: 0
+  plugin_types:
+    geojson_export: geojson_export
+field_type: viewsreference

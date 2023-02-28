@@ -1,0 +1,38 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.mapbox_map.field_repeat_mapbox_base_url
+    - field.field.paragraph.mapbox_map.field_repeat_mapbox_data_view
+    - field.field.paragraph.mapbox_map.field_repeat_mapbox_list_view
+    - paragraphs.paragraphs_type.mapbox_map
+  module:
+    - viewsreference
+id: paragraph.mapbox_map.default
+targetEntityType: paragraph
+bundle: mapbox_map
+mode: default
+content:
+  field_repeat_mapbox_base_url:
+    type: string_textfield
+    weight: 2
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_repeat_mapbox_data_view:
+    type: viewsreference_select
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_repeat_mapbox_list_view:
+    type: viewsreference_select
+    weight: 1
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  created: true
+  status: true
