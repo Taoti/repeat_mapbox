@@ -2,7 +2,7 @@ name: REPEAT Mapbox
 type: module
 description: Provides various mapping functionality for projects using Mapbox
 package: Custom
-core_version_requirement: ^9
+core_version_requirement: ^9 || ^10
 dependencies:
   - drupal:node
   - drupal:taxonomy

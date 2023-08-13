@@ -55,7 +55,7 @@
   }
   Drupal.behaviors.repeat_mapbox = {
     attach: function (context, settings) {
-      $('.repeat_mapbox').once().each(function() {
+      $(once('repeat-mapbox', '.repeat_mapbox', context)).each(function() {
         repeatMap.instances.push(new RepeatMap(this));
       });
       if (settings.repeatMapbox && settings.repeatMapbox.update) {
