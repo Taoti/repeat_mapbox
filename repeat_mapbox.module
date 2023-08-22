@@ -32,10 +32,10 @@ function repeat_mapbox_preprocess_paragraph(array &$vars): void {
           'data-mapbox-id' => $paragraph->id(),
         ],
       ];
-       if (!$paragraph->get('field_repeat_mapbox_base_url')->isEmpty()) {
+       if ($paragraph->hasField('field_repeat_mapbox_base_url') && !$paragraph->get('field_repeat_mapbox_base_url')->isEmpty()) {
         $vars['content']['map']['#attributes']['data-style'] = $paragraph->get('field_repeat_mapbox_base_url')->value;
       }
-      if (!$paragraph->get('field_repeat_mapbox_data_view')->isEmpty()) {
+      if ($paragraph->hasField('field_repeat_mapbox_data_view') && !$paragraph->get('field_repeat_mapbox_data_view')->isEmpty()) {
         /** @var ViewExecutable $list_view */
         $list_view = $vars["content"]["field_repeat_mapbox_list_view"][0]["contents"]["#view"];
         $list_view->build_info['mapbox'] = $paragraph->get('field_repeat_mapbox_data_view')->first()->getValue();
