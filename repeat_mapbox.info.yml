@@ -8,3 +8,5 @@ dependencies:
   - drupal:taxonomy
   - drupal:token
   - drupal:views
+  - paragraphs:paragraphs
+  - viewsreference:viewsreference
