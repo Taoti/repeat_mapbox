@@ -10,6 +10,10 @@ modify code to achieve your desired results.
 ## Required
 
 - Drupal 9.0+
+- drupal/entity_reference_revisions: ~1.3
+- drupal/token ^1.13
+- drupal/viewsreference ^2.0@beta
+- drupal/paragraphs ^1.16
 
 ## Optional
 
