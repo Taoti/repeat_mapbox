@@ -48,4 +48,4 @@ Additionally, provides a light grey highlight on hover effect for countries and 
 example module for componentized JS.
 
 #### Uninstall
-It will remove taxonomy terms created and configurations added.
+Removes created taxonomy terms and configurations.
