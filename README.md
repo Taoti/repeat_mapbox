@@ -26,9 +26,6 @@ implementation to provide points on the map.
    [core docs](https://www.drupal.org/documentation/install/modules-themes/modules-8)
 2. Set configuration options at `/admin/config/services/mapbox`.
 
-# UNINSTALL
-It will remove taxonomy terms created and configurations added.
-
 # USAGE
 
 - Add the `Mapbox Map` paragraph anywhere you want a map to appear
@@ -49,3 +46,6 @@ position is set to pretty much centre of each country.
 
 Additionally, provides a light grey highlight on hover effect for countries and serves as an
 example module for componentized JS.
+
+#### Uninstall
+It will remove taxonomy terms created and configurations added.
