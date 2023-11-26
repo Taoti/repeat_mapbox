@@ -26,6 +26,8 @@ implementation to provide points on the map.
    [core docs](https://www.drupal.org/documentation/install/modules-themes/modules-8)
 2. Set configuration options at `/admin/config/services/mapbox`.
 
+# UNINSTALL
+It will remove taxonomy terms created and configurations added.
 
 # USAGE
 
