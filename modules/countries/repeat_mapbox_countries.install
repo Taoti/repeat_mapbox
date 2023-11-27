@@ -38,13 +38,14 @@ function repeat_mapbox_countries_uninstall(): void {
   $storage = Drupal::service('entity_type.manager');
   $storage = $storage->getStorage('taxonomy_term');
   $terms = $storage->loadMultiple($storage->getQuery()
+    ->accessCheck(FALSE)
     ->condition('vid', 'mapbox_country')
     ->execute());
   $storage->delete($terms);
 
   // It removes configurations added by the module.
   // It will help to avoid collisions in case enable it again.
-  $config = [
+  $configs = [
     'field.field.taxonomy_term.mapbox_country.field_country_code',
     'field.field.taxonomy_term.mapbox_country.field_mapbox_country_id',
     'field.field.taxonomy_term.mapbox_country.field_marker_position',
